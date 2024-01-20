@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Team Scrambler</title>
+        <link rel="shortcut icon" href="mipa5icon.png" type="image/png">
+        <link rel="icon" href="mipa5icon.png" type="image/png">
+        <script src="https://cdn.tailwindcss.com"></script>
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+        <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    </head>
+    <body class="font-[Poppins] bg-slate-800 text-white p-4">
+        <div class="bg-slate-950 rounded-lg p-2 min-h-screen shadow-md shadow-black flex flex-col justify-between gap-8">
+            <div x-data="init()" class="flex flex-col gap-4">
+                <div class="flex flex-row md:flex-col items-center md:mx-auto md:w-[30%] py-2 pb-2">
+                    <img class="w-[100%] md:w-[25%]" src="mipa5icon.png" alt="logo">
+                    <h1 class="font-bold text-4xl md:text-2xl">MIPA 5 Team Scrambler</h1>
+                </div>
+                <div class="flex flex-col gap-4 items-start accent-green-500">
+                    <div class="flex flex-col gap-1.5">
+                        <label for="total">Total Jumlah siswa</label>
+                        <div class="flex bg-gray-900 rounded-md shadow-sm ring-1 ring-inset ring-gray-600 focus-within:ring-2 focus-within:ring-inset focus-within:ring-purple-600">
+                            <input type="number" value="36"  min="1" max="100" name="total" id="total" class="block flex-1 border-0 bg-transparent py-1.5 px-1 text-gray-400 placeholder:text-gray-700 focus:ring-0 w-full">
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-1.5">
+                        <label for="kelompok">Jumlah Kelompok yang diinginkan</label>
+                        <div class="flex bg-gray-900 rounded-md shadow-sm ring-1 ring-inset ring-gray-600 focus-within:ring-2 focus-within:ring-inset focus-within:ring-purple-600">
+                            <input type="number" value="4" min="1" max="100" name="kelompok" id="kelompok" class="block flex-1 border-0 bg-transparent py-1.5 px-1 text-gray-400 placeholder:text-gray-700 focus:ring-0 w-full">
+                        </div>
+                    </div>
+                    <div @click="set" class="flex gap-2 rounded-md shadow-sm">
+                        <input checked type="radio" name="options" id="random" class="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-400 placeholder:text-gray-700 focus:ring-0">
+                        <label for="random">Random</label>
+                    </div>
+                    <div @click="set" class="flex gap-2 rounded-md shadow-sm">
+                        <input type="radio" name="options" id="Lrata" class="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-400 placeholder:text-gray-700 focus:ring-0">
+                        <label for="Lrata">Bagi Rata Laki - Laki</label>
+                    </div>
+                    <div x-show="lrata" class="flex flex-col gap-1.5">
+                        <label for="Lratainput">Masukkan list absen yang laki - laki dengan pemisahnya menggunakan koma(,)</label>
+                        <div  class="flex bg-gray-900 rounded-md shadow-sm ring-1 ring-inset ring-gray-600 focus-within:ring-2 focus-within:ring-inset focus-within:ring-purple-600">
+                            <input type="text" name="Lratainput" id="Lratainput" class="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-400 placeholder:text-gray-700 focus:ring-0 w-full" placeholder="2,5,7,14,15,16,17,18,26" value="2,5,7,14,15,16,17,18,26">
+                        </div>
+                    </div>
+                    <button @click="generateKelompok" class="bg-green-500 shadow-lg shadow-green-700 hover:bg-white hover:text-black hover:ring-2 hover:ring-green-500 px-4 py-2 rounded-md">Generate</button> 
+                </div>
+    
+                <div x-html="res" id="resultbox" class="min-h-10 text-center border border-gray-600 rounded-md p-1 md:p-4 py-2 grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-4"></div> 
+    
+                <script>
+                    function init() {
+                        return {
+                            res: '',
+                            lrata: false,
+                            generateKelompok: function(){
+                                const siswa = parseInt(document.getElementById('total').value);
+                                const kelompok = parseInt(document.getElementById('kelompok').value);
+    
+                                const ilrata = document.getElementById('Lrata').checked;
+                                const man = document.getElementById('Lratainput').value.split(',').map(value => {
+                                    return parseInt(value);
+                                });
+                                if(isNaN(siswa) || isNaN(kelompok) || man.length === 0 || man[0] === ""){
+                                    return; 
+                                }
+    
+                                let array = Array.from({ length: siswa }, (_, i) => i + 1)
+    
+                                let res = [];
+                                let count = 1;
+    
+                                switch(ilrata){
+                                    case true:
+                                        let woman = [];
+    
+                                        array.forEach((p) => {
+                                            if(!man.includes(p)){
+                                                woman.push(p);
+                                            }
+                                        })
+    
+                                        for (let i = 0; i < Math.floor(Math.random() * (5 - 2 + 1)) + 2; i++){
+                                            man.sort(() => Math.random() - 0.5);
+                                            woman.sort(() => Math.random() - 0.5);
+                                        }
+    
+                                        man.forEach((p) => {
+                                            res[count] = res[count] || [];
+                                            res[count].push(p);
+    
+                                            if(count == kelompok){
+                                                count = 1;
+                                            } else {
+                                                count++;
+                                            }
+                                        })
+    
+                                        woman.forEach((p) => {
+                                            res[count] = res[count] || [];
+                                            res[count].push(p);
+    
+                                            if(count == kelompok){
+                                                count = 1;
+                                            } else {
+                                                count++;
+                                            }
+                                        })
+                                        break;
+                                    case false: 
+    
+                                        for (let i = 0; i < Math.floor(Math.random() * (5 - 2 + 1)) + 2; i++){
+                                            array.sort(() => Math.random() - 0.5);
+                                        }
+            
+                                        array.forEach((p) => {
+                                            res[count] = res[count] || [];
+                                            res[count].push(p);
+            
+                                            if(count == kelompok){
+                                                count = 1;
+                                            } else {
+                                                count++;
+                                            }
+                                        })
+                                        break;
+                                }
+    
+    
+                                this.res = Object.entries(res)
+                                    .map(([key, value]) => `<span class="h-fit border rounded-lg p-4"><b class="text-green-600 text-xl md:text-3xl">Kelompok ${key}</b> <br> <span class="text-sm md:text-base">${value.join(', ')}</span></span>`).join('')
+                            },
+                            set: function() {
+                                this.lrata = document.getElementById('Lrata').checked;
+                            }
+                        }
+                    }
+                </script>
+    
+                <script>
+                    function strict(input) {
+                        if(input.srcElement.value < 1){
+                            input.srcElement.value = 1;
+                        } else if(input.srcElement.value > 100){
+                            input.srcElement.value = 100;
+                        }
+                    }
+    
+                    document.getElementById('total').addEventListener("input", strict);
+                    document.getElementById('kelompok').addEventListener("input", strict);
+                </script>
+            </div>
+            <div class="text-center py-2 pt-4">
+                Made with ❤️ By <a class="text-green-500 hover:underline" href="https://github.com/KRUNCHSHooT">Ryan</a> (A44) <br>20 Jan 2024
+            </div>
+        </div>
+
+    </body>
+</html>
