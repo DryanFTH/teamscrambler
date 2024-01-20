@@ -132,7 +132,7 @@
     
     
                                 this.res = Object.entries(res)
-                                    .map(([key, value]) => `<span class="h-fit border rounded-lg p-4"><b class="text-green-600 text-xl md:text-3xl">Kelompok ${key}</b> <br> <span class="text-sm md:text-base">${value.join(', ')}</span></span>`).join('')
+                                    .map(([key, value]) => `<span class="h-full border rounded-lg p-4"><b class="text-green-600 text-xl md:text-3xl">Kelompok ${key}</b> <br> <span class="text-sm md:text-base">${value.join(', ')}</span></span>`).join('')
                             },
                             set: function() {
                                 this.lrata = document.getElementById('Lrata').checked;
